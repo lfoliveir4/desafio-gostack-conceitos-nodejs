@@ -1,4 +1,4 @@
-export function LogRequest(request, response, next) {
+function LogRequest(request, response, next) {
   const { method, url } = request;
 
   const logLabel = `[${method.toUpperCase()} ${url}]`;
@@ -6,3 +6,5 @@ export function LogRequest(request, response, next) {
   console.log(logLabel);
   next();
 }
+
+module.exports = LogRequest;

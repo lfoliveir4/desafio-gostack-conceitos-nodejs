@@ -2,16 +2,17 @@ const express = require("express");
 const cors = require("cors");
 const { uuid } = require("uuidv4");
 
-const { LogRequest } = require("./middleware/LogRequest");
-const { ValidateProjectId } = require("./middleware/ValidateProjectId");
+const LogRequest = require("./middleware/LogRequest");
+const ValidateProjectId = require("./middleware/ValidateProjectId");
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(LogRequest);
 
 const repositories = [];
+
+app.use(LogRequest);
 
 app.get("/repositories", (request, response) => {
   return response.json(repositories);

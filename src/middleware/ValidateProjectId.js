@@ -1,6 +1,6 @@
 const { isUuid } = require("uuidv4");
 
-export function ValidateProjectId(request, response, next) {
+function ValidateProjectId(request, response, next) {
   const { id } = request.params;
 
   if (!isUuid(id)) {
@@ -9,3 +9,5 @@ export function ValidateProjectId(request, response, next) {
 
   return next();
 }
+
+module.exports = ValidateProjectId;
