@@ -3,7 +3,6 @@ const cors = require("cors");
 const { uuid } = require("uuidv4");
 
 const LogRequest = require("./middleware/LogRequest");
-const ValidateProjectId = require("./middleware/ValidateProjectId");
 
 const app = express();
 
@@ -23,10 +22,10 @@ app.post("/repositories", (request, response) => {
 
   const repository = {
     id: uuid(),
-    title,
     url,
+    title,
     techs,
-    like: 0,
+    likes: 0,
   };
 
   repositories.push(repository);
@@ -34,47 +33,54 @@ app.post("/repositories", (request, response) => {
   return response.json(repository);
 });
 
-app.put("/repositories/:id", ValidateProjectId, (request, response) => {
+app.put("/repositories/:id", (request, response) => {
   const { id } = request.params;
-  const { title, url } = request.body;
+  const { title, url, techs } = request.body;
+
   const repositorieIndex = repositories.findIndex(
     (repositorie) => repositorie.id === id
   );
+
   if (repositorieIndex === -1) {
     return response.status(400).json({ error: "Project not found" });
   }
+
   const repositorie = {
     id,
     title,
     url,
     techs,
-    likes: repositories[repositorieIndex].like,
+    likes: repositories[repositorieIndex].likes,
   };
 
   repositories[repositorieIndex] = repositorie;
   return response.json(repositorie);
 });
 
-app.delete("/repositories/:id", ValidateProjectId, (request, response) => {
+app.delete("/repositories/:id", (request, response) => {
   const { id } = request.params;
+
   const repositorieIndex = repositories.findIndex(
     (repositorie) => repositorie.id === id
   );
-  if (repositorieIndex < 0) {
+
+  if (repositorieIndex >= 0) {
+    repositories.splice(repositorieIndex, 1);
+  } else {
     return response.status(400).json({ error: "Project not found" });
   }
-  repositories.splice(repositorieIndex, 1);
+
   return response.status(204).send();
 });
 
-app.post("/repositories/:id/like", ValidateProjectId, (request, response) => {
+app.post("/repositories/:id/like", (request, response) => {
   const { id } = request.params;
 
   const repositorieIndex = repositories.findIndex(
     (repositorie) => repositorie.id === id
   );
 
-  repositories[repositorieIndex].like++;
+  repositories[repositorieIndex].likes++;
 
   return response.json(repositories[repositorieIndex]);
 });
